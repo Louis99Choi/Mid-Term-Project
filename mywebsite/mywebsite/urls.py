@@ -14,8 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+
+from django.views.generic.base import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path("page/", include("page.urls")),  # page라는 주소로 들어오면, page.urls에서 처리
+    # 기본 주소로 들어오면, page/로 보냄
+    path("", RedirectView.as_view(url="/page/", permanent=True)),
+
 ]
+
+# jsp, css, image 파일 등의 정적 파일 처리 가능
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
